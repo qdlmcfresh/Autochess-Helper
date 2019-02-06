@@ -89,6 +89,8 @@ function setup() {
     Warlock : color(90,69,160),
     Warrior : color(184,141,99)
   }
+  types = ["Assassin","DH","Druid","Hunter","Knight","Mage","Mech","Shaman","Warlock","Warrior"];
+  racesq = ["Beast","Demon","Dwarf","Dragon","Elemental","Elf","Goblin","Human","Naga","Ogre","Orc","Troll","Undead"];
 
   racelimit = {
   	Beast : [2,4,6],
@@ -127,7 +129,7 @@ function setup() {
     Elemental : ["Enemy melee attacks against elementals petrify attacker 30% of the time","Enemy melee attacks against allies petrify attacker 30% of the time"],
     Elf : ["25% evasion for elves","25% evasion for elves"],
     Goblin : ["15 armor and hp regen for a random ally","15 armor and hp regen for all boblins"],
-    Human : ["Human attacks have a 20% chanse to disarm for 3s","Human attacks have a 25% chanse to disarm for 3s","Human attacks have a 30% chanse to disarm for 3s"],
+    Human : ["Human attacks have a 20% chance to disarm for 3s","Human attacks have a 25% chance to disarm for 3s","Human attacks have a 30% chance to disarm for 3s"],
     Naga : ["Magic resistance increased by 20 for all allies","Magic resistance increased by 40 for all allies"],
     Ogre : ["+5% max health per head"],
     Orc : ["+250 hp for all orcs","+350 hp for all orcs"],
@@ -136,11 +138,11 @@ function setup() {
   }
 
   typebonus = {
-    Assassin : ["10 % chanse to crit for 3.5x damage", "20 % chanse to crit for 4.5x damage"],
+    Assassin : ["10 % chance to crit for 3.5x damage", "20 % chance to crit for 4.5x damage"],
     DH : ["Negates an enemys demon power", "All friendly demons keep their power"],
     Druid : ["Two one-star druids make a two star", "Two two-star druids make a three-star"],
     Hunter : ["Hunter damage increased by 25%" ,"Hunter damage increased by 35% more"],
-    Knight : ["25% chanse to trigger shield on attack","35% chanse to trigger shield on attack","45% chanse to trigger shield on attack"],
+    Knight : ["25% chance to trigger shield on attack","35% chance to trigger shield on attack","45% chance to trigger shield on attack"],
     Mage : ["Enemy magic resistance reduced by 50", "Enemy magic resistance reduced by 30%"],
     Mech : ["15 hp regen for all mechs","25 hp regen for mechs"],
     Shaman : ["Hex enemy when battle starts"],
@@ -154,7 +156,7 @@ function clr(){
 }
 
 function draw() {
-  createCanvas(1200,800);
+  createCanvas(1500,1000);
   background(255);
   races = {};
   classes = {};
@@ -163,6 +165,34 @@ function draw() {
   strokeWeight(1);
 
   rect(90, 40, 450, 300);
+  /*
+  typecolor = {
+    Assassin : color(222,212,89),
+    DH : color(100,16,130),
+    Druid : color(220,100,0),
+    Hunter : color(155,194,87),
+    Knight : color(249,135,187),
+    Mage : color(97,192,222),
+    Mech : color(183,115,16),
+    Shaman : color(27,60,157),
+    Warlock : color(90,69,160),
+    Warrior : color(184,141,99)
+  }*/
+
+  for(var i = 0; i < types.length; i++){
+    x = 1200;
+    y = 20 +i * 40;
+    fill(typecolor[types[i]]);
+    ellipse(x,y,30);
+    text(types[i],x + 40,y);
+  }
+  for(var i = 0; i < racesq.length; i++){
+    x = 1350;
+    y = 20 +i * 40;
+    fill(racecolor[racesq[i]]);
+    ellipse(x,y,30);
+    text(racesq[i],x + 40,y);
+  }
 
   for (var i=0; i<heroes.length;i++){
   	x = (i % 9) * 50 + 100;
@@ -189,11 +219,13 @@ function draw() {
   }
   checked = []
   for (j = 0; j < picked.length; j++){
-  	x = j * 50 + 100;
-  	y = 360;
+  	x = 100;
+  	y = 360 + j*40;
 
   	image(picked[j].img, x, y);
-  	picked[j].pos.set(x,y);
+    picked[j].pos.set(x,y);
+    fill(color(0,0,0));
+    text(picked[j].name,x+30,y+20);
 
     if (!(checked.includes(picked[j].name))){
     	for (i = 0; i < picked[j].race.length; i++){
@@ -227,22 +259,24 @@ function draw() {
     for (var i=0; i<racelimit[key].length;i++){
       if (races[key] >= racelimit[key][i]){
         textSize(16);
+        x=300;
+        y=430 + bonuses*18;
         if (key != "Demon"){
           fill(0);
           noStroke();
-          text(key + " [" + racelimit[key][i] + "] : " + racebonus[key][i], 100, 430 + bonuses*18);
+          text(key + " [" + racelimit[key][i] + "] : " + racebonus[key][i], x, y);
           fill(racecolor[key]);
           stroke(0);
           strokeWeight(1);
-          ellipse(90,424 + bonuses*18, 15);
+          ellipse(x-10,y-6,15);
         }
         else if (races[key] == 1){
           fill(0);
           noStroke();
-          text(key + " [" + racelimit[key][i] + "] : " + racebonus[key][i], 100, 430 + bonuses*18);
+          text(key + " [" + racelimit[key][i] + "] : " + racebonus[key][i], x, y);
           fill(racecolor[key]);
           strokeWeight(1);
-          ellipse(90,424 + bonuses*18, 15);
+          ellipse(x-10,y-6, 15);
         }
         bonuses += 1;
       }
@@ -259,14 +293,16 @@ function draw() {
 
     for (var i=0; i<typelimit[key].length; i++){
       if (classes[key] >= typelimit[key][i]){
+        x=300;
+        y=430 + bonuses*18;
         textSize(16);
         fill(0);
         noStroke();
-        text(key + " [" + typelimit[key][i] + "] : " + typebonus[key][i], 100, 430 + bonuses*18);
+        text(key + " [" + typelimit[key][i] + "] : " + typebonus[key][i], x,y);
         fill(typecolor[key]);
         stroke(0);
         strokeWeight(1);
-        ellipse(90,424 + bonuses*18, 15);
+        ellipse(x-10,y-6, 15);
         bonuses += 1;
       }
     }
